@@ -19,7 +19,16 @@ error= rng.random(len(products)) < ERROR_RATE
 products.loc[error,"unit_price"]= products.loc[error,"unit_price"] * -1
 
 error= rng.random(len(products)) < ERROR_RATE
-products.loc[error,"category"]=rng.choice(["InvalidCategory1","InvalidCategory2","InvalidCategory3"],size=error.sum())
+products.loc[error,"category"]=rng.choice(["InvalidCategory1",
+                                           "InvalidCategory2",
+                                           "InvalidCategory3",
+                                           "elektronika",
+                                           "ruházat",
+                                           "elelmiszer",
+                                           "ital",
+                                           "higiénia",
+                                           "háztartás",
+                                           "papír-írószer"],size=error.sum())
 
 products["is_active"]=products["is_active"].astype(str)
 error= rng.random(len(products)) < ERROR_RATE

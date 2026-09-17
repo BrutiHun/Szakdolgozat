@@ -21,7 +21,13 @@ error= rng.random(len(stores)) < ERROR_RATE
 stores.loc[error,"region_id"]=rng.integers(999, 9999, size=error.sum())
 
 error= rng.random(len(stores)) < ERROR_RATE
-stores.loc[error,"store_type"]=rng.choice(["InvalidType1","InvalidType2","InvalidType3"],size=error.sum())
+stores.loc[error,"store_type"]=rng.choice(["InvalidType1",
+                                           "InvalidType2",
+                                           "InvalidType3",
+                                           "szupermarket",
+                                           "hipermarket",
+                                           "diszkont",
+    "Kisbolt"],size=error.sum())
 
 stores.to_csv(data_path / "stores.csv", index=False, encoding="utf-8-sig")
 
