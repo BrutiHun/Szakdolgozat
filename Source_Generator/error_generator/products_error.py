@@ -25,5 +25,9 @@ products["is_active"]=products["is_active"].astype(str)
 error= rng.random(len(products)) < ERROR_RATE
 products.loc[error,"is_active"]=rng.choice(["yes","no","0","1","igen","nem", ""],size=error.sum())
 
+error= rng.random(len(products)) < ERROR_RATE
+products=pd.concat([products,products.loc[error]],ignore_index=True)
+
+
 products.to_csv(data_path / "products.csv", index=False, encoding="utf-8-sig")
 
