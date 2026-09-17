@@ -26,7 +26,7 @@ customers.loc[error,"birth_date"]=(pd.to_datetime(customers.loc[error,"birth_dat
 error= rng.random(len(customers)) < ERROR_RATE
 customers.loc[error,"birth_date"]=(pd.to_datetime(customers.loc[error,"birth_date"])+pd.DateOffset(years=-100)).dt.strftime("%Y-%m-%d")
 
-error= rng.random(len(customers)) < ERROR_RATE
+
 
 
 date_formats=[
