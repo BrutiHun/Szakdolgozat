@@ -39,10 +39,10 @@ error= rng.random(len(sales)) < ERROR_RATE
 sales.loc[error,"promotion_id"]=rng.integers(9999, 99999, size=error.sum())
 
 error= rng.random(len(sales)) < ERROR_RATE
-sales.loc[error,"total_price"]=sales.loc[error,"total_price"]*rng.uniform(0.5,2,size=error.sum())
+sales.loc[error,"total_price"]=sales.loc[error,"total_price"]*rng.uniform(0.5,2,size=error.sum()).astype(int)
 
 error= rng.random(len(sales)) < ERROR_RATE
-sales.loc[error,"unit_price"]=sales.loc[error,"unit_price"]*rng.uniform(0.5,2,size=error.sum())
+sales.loc[error,"unit_price"]=sales.loc[error,"unit_price"]*rng.uniform(0.5,2,size=error.sum()).astype(int)
 
 error= rng.random(len(sales)) < ERROR_RATE
 sales.loc[error,"quantity"]=sales.loc[error,"quantity"]*-1
@@ -69,6 +69,13 @@ payment_types=[
 error= rng.random(len(sales)) < ERROR_RATE
 sales.loc[error,"payment_type"]=rng.choice(payment_types,size=error.sum())
 
+
+error= rng.random(len(sales)) < ERROR_RATE
+sales.loc[error,"sales_date"]=(pd.to_datetime(sales.loc[error,"sales_date"])+pd.DateOffset(years=100)).dt.strftime("%Y-%m-%d")
+
+error= rng.random(len(sales)) < ERROR_RATE
+sales.loc[error,"sales_date"]=(pd.to_datetime(sales.loc[error,"sales_date"])+pd.DateOffset(years=-100)).dt.strftime("%Y-%m-%d")
+
 date_formats=[
     "%Y-%m-%d",
     "%d/%m/%Y",
@@ -82,11 +89,7 @@ for index in sales.index[error]:
     format=rng.choice(date_formats)
     sales.loc[index,"sales_date"]=pd.to_datetime(sales.loc[index,"sales_date"]).strftime(format)
 
-error= rng.random(len(sales)) < ERROR_RATE
-sales.loc[error,"sales_date"]=(pd.to_datetime(sales.loc[error,"sales_date"])+pd.DateOffset(years=100)).dt.strftime("%Y-%m-%d")
 
-error= rng.random(len(sales)) < ERROR_RATE
-sales.loc[error,"sales_date"]=(pd.to_datetime(sales.loc[error,"sales_date"])+pd.DateOffset(years=-100)).dt.strftime("%Y-%m-%d")
 
 
 
