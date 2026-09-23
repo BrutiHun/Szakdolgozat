@@ -40,9 +40,17 @@ services:
 
 
     command: >
-      bash -c "
-        airflow db migrate
-      "
+     bash -c "
+       airflow db migrate &&
+       airflow connections delete retail_dwh || true &&
+       airflow connections add retail_dwh
+         --conn-type postgres
+         --conn-host postgres
+         --conn-port 5432
+         --conn-login postgres
+         --conn-password postgres
+         --conn-schema retail_dwh
+         "
 
   airflow-webserver:
     image: apache/airflow:3.1.0
@@ -69,6 +77,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
+      - ./data:/opt/airflow/data
 
     ports:
       - "8080:8080"
@@ -101,6 +110,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
+      - ./data:/opt/airflow/data
 
     command: scheduler
 
@@ -131,7 +141,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
-
+      - ./data:/opt/airflow/data
     command: dag-processor
 
 volumes:
