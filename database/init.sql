@@ -2,6 +2,20 @@ CREATE SCHEMA IF NOT EXISTS staging;
 
 CREATE SCHEMA IF NOT EXISTS dwh;
 
+CREATE SCHEMA IF NOT EXISTS control;
+
+CREATE TABLE control.etl_runs (
+    run_id          BIGSERIAL PRIMARY KEY,
+    pipeline_name   VARCHAR(100) NOT NULL,
+    start_time      TIMESTAMP NOT NULL,
+    end_time        TIMESTAMP,
+    status          VARCHAR(20) NOT NULL,
+    source_rows     INTEGER,
+    processed_rows  INTEGER,
+    failed_rows     INTEGER,
+    error_message   TEXT
+);
+
 CREATE TABLE staging.sales (
     sales_id        VARCHAR,
     sales_date      VARCHAR,
