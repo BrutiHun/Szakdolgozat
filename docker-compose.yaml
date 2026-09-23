@@ -1,13 +1,14 @@
 services:
+
   postgres:
     image: postgres:18
     container_name: szakdolgozat-postgres
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: retail_dwh
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: retail_dwh
 
     ports:
       - "5432:5432"
@@ -15,6 +16,123 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+  airflow-init:
+    image: apache/airflow:3.1.0
+    container_name: szakdolgozat-airflow-init
+
+    depends_on:
+      - postgres
+
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/airflow
+
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "admin:admin"
+
+      AIRFLOW__API_AUTH__JWT_SECRET: "szakdolgozat-airflow-jwt-secret-change-me"
+
+      AIRFLOW__API__SECRET_KEY: "szakdolgozat-airflow-api-secret-change-me"
+
+
+    command: >
+      bash -c "
+        airflow db migrate
+      "
+
+  airflow-webserver:
+    image: apache/airflow:3.1.0
+    container_name: szakdolgozat-airflow-webserver
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - airflow-init
+
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/airflow
+
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "admin:admin"
+
+      AIRFLOW__API_AUTH__JWT_SECRET: "szakdolgozat-airflow-jwt-secret-change-me"
+      AIRFLOW__API__SECRET_KEY: "szakdolgozat-airflow-api-secret-change-me"
+
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+
+    ports:
+      - "8080:8080"
+
+    command: api-server
+
+
+  airflow-scheduler:
+    image: apache/airflow:3.1.0
+    container_name: szakdolgozat-airflow-scheduler
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - airflow-init
+
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/airflow
+
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "admin:admin"
+
+      AIRFLOW__API_AUTH__JWT_SECRET: "szakdolgozat-airflow-jwt-secret-change-me"
+      AIRFLOW__API__SECRET_KEY: "szakdolgozat-airflow-api-secret-change-me"
+
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+
+    command: scheduler
+
+
+  airflow-dag-processor:
+    image: apache/airflow:3.1.0
+    container_name: szakdolgozat-airflow-dag-processor
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - airflow-init
+
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/airflow
+
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "admin:admin"
+
+      AIRFLOW__API_AUTH__JWT_SECRET: "szakdolgozat-airflow-jwt-secret-change-me"
+      AIRFLOW__API__SECRET_KEY: "szakdolgozat-airflow-api-secret-change-me"
+
+
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+
+    command: dag-processor
 
 volumes:
   postgres_data:
