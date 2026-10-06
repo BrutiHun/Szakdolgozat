@@ -14,6 +14,7 @@ x-airflow-common: &airflow-common
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
     - ./Source_Generator/data:/opt/airflow/data
+    - ./airflow/src:/opt/airflow/src
 
 services:
   postgres:
