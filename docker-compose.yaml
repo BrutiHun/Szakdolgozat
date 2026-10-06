@@ -9,6 +9,7 @@ x-airflow-common: &airflow-common
     AIRFLOW__API__SECRET_KEY: "szakdolgozat-airflow-api-secret-change-me"
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-webserver:8080/execution/
     AIRFLOW__CORE__FERNET_KEY: "MnOpicIrcwYhwJ6h1mUwXpU3oQvmsji1KMpQLTDd4kM="
+    PYTHONPATH: /opt/airflow
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
@@ -63,6 +64,14 @@ services:
       - postgres
       - airflow-init
     command: scheduler
-
+    
+  airflow-dag-processor:
+    <<: *airflow-common
+    container_name: szakdolgozat-airflow-dag-processor
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - airflow-init
+    command: dag-processor
 volumes:
   postgres_data:
