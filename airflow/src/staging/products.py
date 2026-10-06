@@ -10,6 +10,7 @@ def load_products():
     df = pd.read_csv(SOURCE_PATH, dtype=str)
 
     hook = PostgresHook(postgres_conn_id="retail_dwh")
+    hook.run("TRUNCATE TABLE staging.products;")
 
     hook.insert_rows(
         table="staging.products",
