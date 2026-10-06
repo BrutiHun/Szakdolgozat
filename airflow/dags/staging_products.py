@@ -9,10 +9,10 @@ from src.staging.products import load_products
 with DAG(
     dag_id="staging_products",
     start_date=datetime(2026, 1, 1),
-    schedule=None,
+    schedule=None
 ) as dag:
 
     load_products_task = PythonOperator(
         task_id="load_products",
-        python_callable=load_products,
+        python_callable=load_products
     )

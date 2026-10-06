@@ -21,5 +21,5 @@ def load_products():
             "category",
             "unit_price",
             "is_active",
-        ],
+        ]
     )
