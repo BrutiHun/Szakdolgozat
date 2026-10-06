@@ -10,7 +10,6 @@ with DAG(
     dag_id="staging_products",
     start_date=datetime(2026, 1, 1),
     schedule=None,
-    catchup=False,
 ) as dag:
 
     load_products_task = PythonOperator(
