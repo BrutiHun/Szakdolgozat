@@ -2,9 +2,17 @@ CREATE SCHEMA IF NOT EXISTS staging;
 
 CREATE SCHEMA IF NOT EXISTS dwh;
 
-CREATE DATABASE airflow;
+CREATE SCHEMA IF NOT EXISTS hst;
 
 CREATE SCHEMA IF NOT EXISTS control;
+
+
+
+
+
+CREATE DATABASE airflow;
+
+
 
 CREATE TABLE control.etl_runs (
     run_id          BIGSERIAL PRIMARY KEY,
@@ -69,6 +77,85 @@ CREATE TABLE staging.regions (
     country         VARCHAR,
     city            VARCHAR
 );
+
+
+
+
+CREATE TABLE hst.stores_history (
+    store_key    BIGSERIAL PRIMARY KEY,
+    store_id         INTEGER NOT NULL,
+    store_name       VARCHAR(100),
+    store_type       VARCHAR(50),
+    region_id        INTEGER,
+    valid_from       TIMESTAMP NOT NULL,
+    valid_to         TIMESTAMP,
+    is_current       BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE hst.loyalty_customers_history (
+    customer_key    BIGSERIAL PRIMARY KEY,
+    customer_id      INTEGER NOT NULL,
+    first_name       VARCHAR(100),
+    last_name        VARCHAR(100),
+    gender           VARCHAR(25),
+    birth_date       DATE,
+    region_id        INTEGER,
+    valid_from       TIMESTAMP NOT NULL,
+    valid_to         TIMESTAMP,
+    is_current       BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE hst.products_history (
+    product_key    BIGSERIAL PRIMARY KEY,
+    product_id       INTEGER NOT NULL,
+    product_code     VARCHAR(50),
+    category         VARCHAR(100),
+    unit_price       NUMERIC(12, 2),
+    is_active        BOOLEAN,
+    valid_from       TIMESTAMP NOT NULL,
+    valid_to         TIMESTAMP,
+    is_current       BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE hst.promotions_history (
+    promotion_key    BIGSERIAL PRIMARY KEY,
+    promotion_id     INTEGER NOT NULL,
+    product_id       INTEGER,
+    discount_percent NUMERIC(5, 2),
+    promotion_name   VARCHAR(100),
+    start_date       DATE,
+    end_date         DATE,
+    valid_from       TIMESTAMP NOT NULL,
+    valid_to         TIMESTAMP,
+    is_current       BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE hst.regions_history (
+    region_key    BIGSERIAL PRIMARY KEY,
+    region_id        INTEGER NOT NULL,
+    country          VARCHAR(100),
+    city             VARCHAR(100),
+    valid_from       TIMESTAMP NOT NULL,
+    valid_to         TIMESTAMP,
+    is_current       BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE hst.sales_history (
+    sales_history_id BIGSERIAL PRIMARY KEY,
+    sales_id         INTEGER NOT NULL,
+    sales_date       TIMESTAMP NOT NULL,
+    store_id         INTEGER NOT NULL,
+    customer_id      INTEGER,
+    product_id       INTEGER NOT NULL,
+    promotion_id     INTEGER,
+    quantity         INTEGER,
+    unit_price       NUMERIC(12, 2),
+    total_price      NUMERIC(12, 2),
+    payment_type     VARCHAR(50),
+    processed_at     DATE
+);
+
+
 
 
 
