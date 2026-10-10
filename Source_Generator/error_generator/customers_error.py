@@ -45,6 +45,6 @@ for index in customers.index[error]:
 error= rng.random(len(customers)) < ERROR_RATE
 customers.loc[error,"gender"]=rng.choice(["Male","Female","","M","F"],size=error.sum())
 
-
+stores["region_id"]=stores["region_id"].astype("Int64")
 customers.to_csv(data_path / "loyalty_customers.csv", index=False, encoding="utf-8-sig")
 

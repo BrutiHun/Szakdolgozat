@@ -28,6 +28,6 @@ stores.loc[error,"store_type"]=rng.choice(["InvalidType1",
                                            "hipermarket",
                                            "diszkont",
     "Kisbolt"],size=error.sum())
-
+stores["region_id"]=stores["region_id"].astype("Int64")
 stores.to_csv(data_path / "stores.csv", index=False, encoding="utf-8-sig")
 

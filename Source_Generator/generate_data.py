@@ -19,11 +19,11 @@ for generator in generators:
     runpy.run_path(base_path/"data_generator"/f"{generator}.py")
 
 generators=[
+    "sales_error",
     "products_error",
     "promotions_error",
     "stores_error",
-    "customers_error",
-    "sales_error"
+    "customers_error"
 ]
 for generator in generators:
     print(f"Running {generator}")
