@@ -10,12 +10,16 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-webserver:8080/execution/
     AIRFLOW__CORE__FERNET_KEY: "MnOpicIrcwYhwJ6h1mUwXpU3oQvmsji1KMpQLTDd4kM="
     PYTHONPATH: /opt/airflow
+    _PIP_ADDITIONAL_REQUIREMENTS: "dbt-postgres"
+    DBT_PROFILES_DIR: /opt/airflow/dbt
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
     - ./Source_Generator/data:/opt/airflow/data
     - ./airflow/src:/opt/airflow/src
+    - ./dbt:/opt/airflow/dbt
+    
 
 services:
   postgres:
@@ -73,5 +77,17 @@ services:
       - postgres
       - airflow-init
     command: dag-processor
+  
+  
+  dbt:
+    build:
+      context: ./dbt
+    container_name: szakdolgozat-dbt
+    working_dir: /usr/app
+    volumes:
+      - ./dbt:/usr/app
+      - ./dbt/profiles.yml:/root/.dbt/profiles.yml:ro
+    profiles:
+      - dbt
 volumes:
   postgres_data:

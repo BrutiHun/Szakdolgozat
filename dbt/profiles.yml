@@ -1,0 +1,12 @@
+retail_dwh_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres
+      user: postgres
+      pass: postgres
+      port: 5432
+      dbname: retail_dwh
+      schema: dwh
+      threads: 4

@@ -1,0 +1,10 @@
+sources:
+  - name: staging
+    schema: staging
+    tables:
+      - name: sales
+      - name: stores
+      - name: loyalty_customers
+      - name: products
+      - name: promotions
+      - name: regions
